@@ -2,7 +2,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Security.Policy;
 
 namespace MusicDownloader.Downloader
 {
@@ -11,22 +10,18 @@ namespace MusicDownloader.Downloader
         private string _url;
         private HtmlWeb _web;
         private HtmlDocument _doc;
-        private string[] _sites = { "hitmo", "drivemusic" };
-        private string songTitle;
         private string path = Path.Combine(Environment.CurrentDirectory, "output");
+        private string _songName;
 
         public string GetPath
         {
             get { return path; }
         }
 
-        public string GetSongTitle
+        public LinkFinder(string songName)
         {
-            get { return songTitle; }
-        }
+            _songName = songName;
 
-        public LinkFinder()
-        {
             _url = "https://c.hitmos.com/search?q=";
             _web = new HtmlWeb();
             _web.PreRequest += request =>
@@ -42,16 +37,19 @@ namespace MusicDownloader.Downloader
         {
             if (!Directory.Exists(path))
                 Directory.CreateDirectory(path);
+
+            return;
         }
 
-        private string GetSiteUrl(string songName)
+        public string GetSiteUrl()
         {
-            songName = songName.Replace(" ", "+");
-            songName = songName.Contains("&") ? songName.Replace("&", "and") : songName;
-            _url += songName;
-            List<string> linksList = new List<string>();
+            _songName = _songName.Replace(" ", "+");
+            _songName = _songName.Contains("&") ? _songName.Replace("&", "and") : _songName;
+            _url += _songName;
             _doc = _web.Load(_url);
+
             var links = _doc.DocumentNode.SelectNodes("//a[@class='track__download-btn']");
+            List<string> linksList = new List<string>();
 
             foreach (HtmlNode link in links)
             {
@@ -68,25 +66,15 @@ namespace MusicDownloader.Downloader
             return "";
         }
 
-        public string GetDownloadString(string songName)
+        /*public void AddSongName(List<string> list, HtmlDocument doc)
         {
-            /*List<string> songs = new List<string>();
-            _doc = _web.Load(GetSiteUrl(songName));*/
-            /*var links = _doc.DocumentNode.SelectNodes("//a");
-            songTitle = _doc.DocumentNode.SelectSingleNode("//h1[@class='p-track-title']").InnerText;
-
-            foreach (var item in links)
+            string songTitle = doc.DocumentNode.SelectSingleNode("//div[@class='track__title']").InnerText;
+            string songDesc = doc.DocumentNode.SelectSingleNode("//div[@class='track__desc']").InnerText;
+            if (!String.IsNullOrEmpty(songTitle) && !String.IsNullOrEmpty(songDesc))
             {
-                songs.Add(item.Attributes["href"]?.Value);
+                list.Add(songTitle);
+                list.Add(songDesc);
             }
-
-            foreach (string song in songs)
-            {
-                if (song.Contains(".mp3"))
-                    return song;
-            }*/
-
-            return GetSiteUrl(songName);
-        }
+        }*/
     }
 }

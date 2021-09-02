@@ -19,18 +19,16 @@ namespace MusicDownloader
         public MainWindow()
         {
             InitializeComponent();
-
-            lf = new LinkFinder();
         }
 
         private void btnDownload_Click(object sender, RoutedEventArgs e)
         {
-            Download(tBSearch.Text);
+            Download();
         }
 
-        public void Download(string songName)
+        public void Download()
         {
-            lf = new LinkFinder();
+            lf = new LinkFinder(tBSearch.Text);
 
             if (Directory.Exists(lf.GetPath))
             {
@@ -44,13 +42,9 @@ namespace MusicDownloader
                         wc.DownloadProgressChanged += new DownloadProgressChangedEventHandler(DownloadProgress);
 
                         wc.DownloadFileAsync(
-                            new Uri(lf.GetDownloadString(songName)),
-                            Path.Combine(lf.GetPath, $"{songName + Guid.NewGuid()}.mp3")
+                            new Uri(lf.GetSiteUrl()),
+                            Path.Combine(lf.GetPath, $"{GetHandledString(tBSearch.Text) + Guid.NewGuid()}.mp3")
                         );
-
-                        //string[] lines = lf.GetSongTitle.Split(new char[] { '-', '\n' });
-                        //tBlocksongTitle.Text += String.Format(" {0}", lines[1].Trim());
-                        //tBlockAuthor.Text += String.Format(" {0}", lines[2].Trim());
                     }
                 }
                 catch
@@ -73,6 +67,12 @@ namespace MusicDownloader
                 BytesToMB(e.TotalBytesToReceive),
                 e.ProgressPercentage);
 
+           /* if (lf.GetSongName().Length > 0)
+            {
+                tBlocksongTitle.Text = lf.GetSongName()[0];
+                tBlockAuthor.Text = lf.GetSongName()[1];
+            }*/
+
             tBlockProgressInfo.Text = progress;
             pBProcess.Value = e.ProgressPercentage;
         }
@@ -81,7 +81,7 @@ namespace MusicDownloader
 
         private void Completed(object sender, AsyncCompletedEventArgs e)
         {
-            if (e.Cancelled == true)
+            if (e.Cancelled)
                 tBlockProgressInfo.Text = "Download has been canceled.";
             else
                 tBlockProgressInfo.Text = "Download completed!";
@@ -89,6 +89,8 @@ namespace MusicDownloader
             _completed = true;
             Process.Start(lf.GetPath);
         }
+
+        private string GetHandledString(string s) => s.Contains(" ") ? s.Replace(' ', '_') : s;
 
     }
 }
