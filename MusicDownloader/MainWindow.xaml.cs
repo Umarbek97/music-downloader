@@ -5,6 +5,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
+using System.Linq;
 
 namespace MusicDownloader
 {
@@ -45,6 +46,8 @@ namespace MusicDownloader
                             new Uri(lf.GetSiteUrl()),
                             Path.Combine(lf.GetPath, $"{GetHandledString(tBSearch.Text) + Guid.NewGuid()}.mp3")
                         );
+
+                        AddSongNames();
                     }
                 }
                 catch
@@ -56,6 +59,15 @@ namespace MusicDownloader
                 {
                     tBSearch.Text = String.Empty;
                 }
+            }
+        }
+
+        private void AddSongNames()
+        {
+            if (lf.List.Count > 0)
+            {
+                tBlockAuthor.Text = lf.List.Select(x => x.Author).ToString();
+                tBlocksongTitle.Text = lf.List.Select(x => x.Name).ToString();
             }
         }
 

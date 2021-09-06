@@ -10,8 +10,11 @@ namespace MusicDownloader.Downloader
         private string _url;
         private HtmlWeb _web;
         private HtmlDocument _doc;
-        private string path = Path.Combine(Environment.CurrentDirectory, "output");
         private string _songName;
+
+        private readonly string path = Path.Combine(Environment.CurrentDirectory, "output");
+
+        public List<Song> List = new List<Song>();
 
         public string GetPath
         {
@@ -48,6 +51,8 @@ namespace MusicDownloader.Downloader
             _url += _songName;
             _doc = _web.Load(_url);
 
+            AddSongName(_doc);
+
             var links = _doc.DocumentNode.SelectNodes("//a[@class='track__download-btn']");
             List<string> linksList = new List<string>();
 
@@ -66,15 +71,21 @@ namespace MusicDownloader.Downloader
             return "";
         }
 
-        /*public void AddSongName(List<string> list, HtmlDocument doc)
+        public void AddSongName(HtmlDocument doc)
         {
             string songTitle = doc.DocumentNode.SelectSingleNode("//div[@class='track__title']").InnerText;
             string songDesc = doc.DocumentNode.SelectSingleNode("//div[@class='track__desc']").InnerText;
             if (!String.IsNullOrEmpty(songTitle) && !String.IsNullOrEmpty(songDesc))
             {
-                list.Add(songTitle);
-                list.Add(songDesc);
+                List.Add(new Song { Name = songTitle, Author = songDesc });
             }
-        }*/
+        }
+    }
+
+    class Song
+    {
+        public string Name { get; set; }
+
+        public string Author { get; set; }
     }
 }
