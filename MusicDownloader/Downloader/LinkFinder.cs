@@ -14,7 +14,7 @@ namespace MusicDownloader.Downloader
 
         private readonly string path = Path.Combine(Environment.CurrentDirectory, "output");
 
-        public List<Song> List = new List<Song>();
+        public Song Song { get; private set; }
 
         public string GetPath
         {
@@ -77,7 +77,7 @@ namespace MusicDownloader.Downloader
             string songDesc = doc.DocumentNode.SelectSingleNode("//div[@class='track__desc']").InnerText;
             if (!String.IsNullOrEmpty(songTitle) && !String.IsNullOrEmpty(songDesc))
             {
-                List.Add(new Song { Name = songTitle, Author = songDesc });
+                Song = new Song { Author = songTitle, Name = songDesc };
             }
         }
     }

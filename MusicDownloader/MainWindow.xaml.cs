@@ -64,10 +64,10 @@ namespace MusicDownloader
 
         private void AddSongNames()
         {
-            if (lf.List.Count > 0)
+            if (!String.IsNullOrEmpty(lf.Song.Author) && !String.IsNullOrEmpty(lf.Song.Name))
             {
-                tBlockAuthor.Text = lf.List.Select(x => x.Author).ToString();
-                tBlocksongTitle.Text = lf.List.Select(x => x.Name).ToString();
+                tBlockAuthor.Text += $" {lf.Song.Author.Trim()}";
+                tBlocksongTitle.Text += $" {lf.Song.Name.Trim()}";
             }
         }
 
