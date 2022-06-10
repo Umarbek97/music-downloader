@@ -5,7 +5,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Windows;
-using System.Linq;
 
 namespace MusicDownloader
 {
@@ -66,8 +65,8 @@ namespace MusicDownloader
         {
             if (!String.IsNullOrEmpty(lf.Song.Author) && !String.IsNullOrEmpty(lf.Song.Name))
             {
-                tBlockAuthor.Text += $" {lf.Song.Author.Trim()}";
-                tBlocksongTitle.Text += $" {lf.Song.Name.Trim()}";
+                tBlockAuthor.Text = $" {lf.Song.Author.Trim()}";
+                tBlocksongTitle.Text = $" {lf.Song.Name.Trim()}";
             }
         }
 
@@ -78,12 +77,6 @@ namespace MusicDownloader
                 BytesToMB(e.BytesReceived),
                 BytesToMB(e.TotalBytesToReceive),
                 e.ProgressPercentage);
-
-           /* if (lf.GetSongName().Length > 0)
-            {
-                tBlocksongTitle.Text = lf.GetSongName()[0];
-                tBlockAuthor.Text = lf.GetSongName()[1];
-            }*/
 
             tBlockProgressInfo.Text = progress;
             pBProcess.Value = e.ProgressPercentage;
